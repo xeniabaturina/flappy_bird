@@ -7,15 +7,9 @@ import java.awt.event.MouseListener;
 
 public class FlappyBirdController implements ActionListener, MouseListener {
 
-
-    private void render() {
-        //TODO("Will be implemented")
-    }
-
     // region: ActionListener
     @Override
     public void actionPerformed(ActionEvent e) {
-
     }
     // end region
 
@@ -23,28 +17,23 @@ public class FlappyBirdController implements ActionListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
+    public void mousePressed(MouseEvent e) {/* ignore */}
 
     @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
+    public void mouseReleased(MouseEvent e) {/* ignore */}
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
+    public void mouseEntered(MouseEvent e) {/* ignore */}
 
     @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
+    public void mouseExited(MouseEvent e) {/* ignore */}
 
     // end region
+
+    private void checkGameOver(){
+
+    }
 }
