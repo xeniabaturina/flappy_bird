@@ -56,7 +56,7 @@ public class Game {
         passedColumns++;
     }
 
-    enum GameStatus {
+    public enum GameStatus {
         INITIAL, GAME_PLAYING, GAME_OVER,
 
     }
