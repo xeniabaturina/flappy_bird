@@ -14,6 +14,8 @@ public class Columns {
         return columns.size();
     }
 
+    public ArrayList<Rectangle> getColumns(){ return columns;};
+
     public void add(int x, int y, int width, int height){
         columns.add(new Rectangle(x, y, width, height));
     }
