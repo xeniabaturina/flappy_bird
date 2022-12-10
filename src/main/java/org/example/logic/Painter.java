@@ -8,11 +8,6 @@ import org.example.model.Screen;
 import java.awt.*;
 
 public class Painter {
-    private Graphics graphics;
-    private Game game;
-    private Columns columns;
-    private Bird bird;
-    private Screen screen;
 
     Color skyColor = Color.cyan;
     Color groundColor = Color.orange;
@@ -21,14 +16,14 @@ public class Painter {
     Color columnColor = Color.green.darker();
     Color titleColor = Color.white;
 
-    private void drawRectangle(Color color, Rectangle rectangle){
+    private void drawRectangle(Graphics graphics, Color color, Rectangle rectangle){
         graphics.setColor(color);
         graphics.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     }
 
-    private void drawTitle(){
+    private void drawTitle(Graphics graphics, Game game, Screen screen){
         graphics.setColor(titleColor);
-        graphics.setFont(new Font("Arial", 1, 100));
+        graphics.setFont(new Font("Arial", Font.BOLD, 100));
 
         switch (game.getGameStatus()) {
             case INITIAL -> graphics.drawString("Click to start!", 75, screen.getHeight() / 2 - 50);
@@ -37,19 +32,19 @@ public class Painter {
         }
     }
 
-    public void paint() {
-        drawRectangle(skyColor, new Rectangle(0, 0, screen.getWidth(), screen.getHeight()));
+    public void paint(Graphics graphics, Game game, Columns columns, Bird bird, Screen screen) {
+        drawRectangle(graphics, skyColor, new Rectangle(0, 0, screen.getWidth(), screen.getHeight()));
 
-        drawRectangle(groundColor, new Rectangle(0, screen.getHeight() - 120, screen.getWidth(), 120));
+        drawRectangle(graphics, groundColor, new Rectangle(0, screen.getHeight() - 120, screen.getWidth(), 120));
 
-        drawRectangle(grassColor, new Rectangle(0, screen.getHeight() - 120, screen.getWidth(), 20));
+        drawRectangle(graphics, grassColor, new Rectangle(0, screen.getHeight() - 120, screen.getWidth(), 20));
 
-        drawRectangle(birdColor, bird.getBird());
+        drawRectangle(graphics, birdColor, bird.getBird());
 
         for (Rectangle column : columns.getColumns()){
-            drawRectangle(columnColor, column);
+            drawRectangle(graphics, columnColor, column);
         }
 
-        drawTitle();
+        drawTitle(graphics, game,  screen);
     }
 }
