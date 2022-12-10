@@ -71,6 +71,7 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
     @Override
     public void actionPerformed(ActionEvent e) {
         if (game.getGameStatus() == Game.GameStatus.GAME_PLAYING) {
+            changeWorld.setSpeed(INITIAL_SPEED + game.getPassedColumns() / 3);
             changeWorld.nextFrame(game, columns, bird, screen);
             checkGameOverAndRepaint();
         }
