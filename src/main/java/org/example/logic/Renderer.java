@@ -1,7 +1,6 @@
 package org.example.logic;
 
 import org.example.model.Bird;
-import org.example.model.Columns;
 import org.example.model.Game;
 import org.example.model.Screen;
 
@@ -10,16 +9,16 @@ import java.io.Serial;
 
 import javax.swing.JPanel;
 
-public class Renderer extends JPanel
-{
+public class Renderer extends JPanel {
+
     private Game game;
-    private Columns columns;
+    private ColumnManager columnManager;
     private final Bird bird;
     private final Screen screen;
 
-    public Renderer(Game game, Columns columns, Bird bird, Screen screen) {
+    public Renderer(Game game, ColumnManager columnManager, Bird bird, Screen screen) {
         this.game = game;
-        this.columns = columns;
+        this.columnManager = columnManager;
         this.bird = bird;
         this.screen = screen;
     }
@@ -28,8 +27,8 @@ public class Renderer extends JPanel
         this.game = game;
     }
 
-    public void setColumns(Columns columns) {
-        this.columns = columns;
+    public void setColumns(ColumnManager columnManager) {
+        this.columnManager = columnManager;
     }
 
     @Serial
@@ -40,7 +39,6 @@ public class Renderer extends JPanel
     {
         super.paintComponent(graphics);
         Painter painter = new Painter();
-        painter.paint(graphics, game, columns, bird, screen);
+        painter.paint(graphics, game, columnManager, bird, screen);
     }
-
 }

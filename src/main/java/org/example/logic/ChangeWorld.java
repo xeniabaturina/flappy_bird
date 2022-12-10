@@ -1,17 +1,12 @@
 package org.example.logic;
 
-import org.example.model.Bird;
-import org.example.model.Columns;
-import org.example.model.Game;
-import org.example.model.Screen;
+import org.example.model.*;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class ChangeWorld {
+
     private int speed;
-    private final Random random = new Random();
 
     public ChangeWorld(int speed) {
         this.speed = speed;
@@ -19,72 +14,57 @@ public class ChangeWorld {
 
     private void crashCheck(
             Game game,
-            Columns columns,
+            ColumnManager columnManager,
             Bird bird,
             Screen screen
     ) {
         if (bird.getBird().y == 0 || bird.getBird().y == screen.getHeight() - 140) {
             game.setGameStatus(Game.GameStatus.GAME_OVER);
         } else {
-            for (Rectangle column : columns.getColumns()) {
+            for (Column column : columnManager.getColumns()) {
                 int birdX = bird.getBird().x;
                 int birdY = bird.getBird().y;
-                if (birdX >= column.x && birdX <= column.x + column.width
-                        && birdY >= column.y && birdY <= column.y + column.height) {
-                    game.setGameStatus(Game.GameStatus.GAME_OVER);
-                    return;
+                int birdWidth = bird.getBird().width;
+                int birdHeight = bird.getBird().height;
+
+                if (birdX + birdWidth >= column.getX() && birdX <= column.getX() + column.getWidth()) {
+                    if (birdY + birdHeight >= column.getUpperColumnMinY() && birdY <= column.getUpperColumnMaxY()
+                            || birdY + birdHeight >= column.getBottomColumnMinY() && birdY <= column.getBottomColumnMaxY()) {
+                        game.setGameStatus(Game.GameStatus.GAME_OVER);
+                        return;
+                    }
                 }
             }
         }
     }
 
-    private void addColumn(Screen screen, Columns columns, int widthColumn, int space){
-        int heightColumn = 50 + random.nextInt(250);
-
-        int columnX;
-        if (columns.getSize() == 0) {
-            columnX = screen.getWidth() + widthColumn;
-        } else {
-            int firstColumnX = columns.getColumns().get(columns.getColumns().size() - 1).x;
-            columnX = firstColumnX + 600;
-        }
-        columns.add(columnX, screen.getHeight() - heightColumn - 120, widthColumn, heightColumn);
-        columns.add(columnX, 0, widthColumn, screen.getHeight() - heightColumn - space);
-
-    }
-
-    public void addColumns(Screen screen, Columns columns, int amount) {
-        int widthColumn = 100;
-        int space = 300;
-
+    public void addColumns(Screen screen, ColumnManager columnManager, int amount) {
         for (int i = 0; i < amount; i++){
-            addColumn(screen, columns, widthColumn, space);
+            columnManager.addColumn(screen);
         }
     }
 
     // move columns on screen & move bird
     public void nextFrame(
             Game game,
-            Columns columns,
+            ColumnManager columnManager,
             Bird bird,
             Screen screen
     ) {
         int passedColumns = 0;
         ArrayList<Integer> columnsToRemove = new ArrayList<>();
-        for (int i = 0; i < columns.getSize(); i++) {
-            Rectangle column = columns.getColumns().get(i);
+        for (int i = 0; i < columnManager.getSize(); i++) {
+            Column column = columnManager.getColumns().get(i);
             int birdX = bird.getBird().x;
-            int columnEdgeX = (column.x + column.width);
-            int columnCenterX = columnEdgeX - (column.width / 2);
+            int columnEdgeX = (column.getX() + column.getWidth());
+            int columnCenterX = columnEdgeX - (column.getWidth() / 2);
 
-            column.x -= speed;
-            if (column.y == 0) {
-                if (columnCenterX - speed <= birdX && columnCenterX > birdX) {
-                    passedColumns++;
-                }
-                if (columnEdgeX < 0) {
-                    columnsToRemove.add(i);
-                }
+            column.moveLeft(speed);
+            if (columnCenterX - speed <= birdX && columnCenterX > birdX) {
+                passedColumns++;
+            }
+            if (columnEdgeX < 0) {
+                columnsToRemove.add(i);
             }
         }
 
@@ -92,23 +72,22 @@ public class ChangeWorld {
             game.passColumn();
         }
         for (int i = 0; i < columnsToRemove.size(); i++) {
-            columns.remove();
-            columns.remove();
+            columnManager.remove();
         }
-        addColumns(screen, columns, columnsToRemove.size());
-        bird.getBird().y += Math.min(speed / 2, (screen.getHeight() - 140) - bird.getBird().y);
-        crashCheck(game, columns, bird, screen);
+        addColumns(screen, columnManager, columnsToRemove.size());
+        bird.getBird().y += Math.min(speed / 2, (screen.getHeight() - columnManager.getGrassHeight()) - bird.getBird().y - bird.getBird().height);
+        crashCheck(game, columnManager, bird, screen);
     }
 
     //when user clicks to fly up
     public void jump(
             Game game,
-            Columns columns,
+            ColumnManager columnManager,
             Bird bird,
             Screen screen
     ) {
         bird.getBird().y -= Math.min(speed * 5, bird.getBird().y);
-        crashCheck(game, columns, bird, screen);
+        crashCheck(game, columnManager, bird, screen);
     }
 
     public int getSpeed() {

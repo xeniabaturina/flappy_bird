@@ -3,7 +3,7 @@ package org.example.controller;
 import org.example.logic.Renderer;
 import org.example.logic.ChangeWorld;
 import org.example.model.Bird;
-import org.example.model.Columns;
+import org.example.logic.ColumnManager;
 import org.example.model.Game;
 import org.example.model.Screen;
 
@@ -13,36 +13,56 @@ import java.awt.event.*;
 public class FlappyBirdController implements ActionListener, MouseListener, KeyListener {
 
     private Game game;
-    private Columns columns;
+    private ColumnManager columnManager;
+
     private final Bird bird;
     private final Screen screen;
     private final ChangeWorld changeWorld;
     private final Renderer renderer;
     private final Timer timer;
-    int WIDTH = 800;
-    int HEIGHT = 600;
-    int INITIAL_SPEED = 3;
+
+    int SCREEN_WIDTH = 800;
+    int SCREEN_HEIGHT = 600;
+    int GRASS_HEIGHT = 140;
+    int BIRD_SIZE = 20;
+    int INITIAL_GAME_SPEED = 3;
+    int INITIAL_COLUMN_WIDTH = 100;
+    int INITIAL_COLUMN_GAP = 300;
+    int INITIAL_SPACE_BTW_COLUMNS = 400;
+    int INITIAL_BIRD_X = SCREEN_WIDTH / 2 - 10;
+    int INITIAL_BIRD_Y = SCREEN_HEIGHT / 2 - 10;
 
     public FlappyBirdController() {
         this.game = new Game();
-        this.columns = new Columns();
-        this.bird = new Bird(WIDTH / 2 - 10, HEIGHT / 2 - 10, 20, 20);
-        this.screen = new Screen(WIDTH, HEIGHT);
-        this.changeWorld = new ChangeWorld(INITIAL_SPEED);
-        this.renderer = new Renderer(game, columns, bird, screen);
+        this.columnManager = new ColumnManager(
+                INITIAL_COLUMN_WIDTH,
+                INITIAL_COLUMN_GAP,
+                INITIAL_SPACE_BTW_COLUMNS,
+                GRASS_HEIGHT);
+
+        this.bird = new Bird(INITIAL_BIRD_X, INITIAL_BIRD_Y, BIRD_SIZE, BIRD_SIZE);
+        this.screen = new Screen(SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.changeWorld = new ChangeWorld(INITIAL_GAME_SPEED);
+        this.renderer = new Renderer(game, columnManager, bird, screen);
         this.timer = new Timer(20, this);
     }
 
     public void start() {
-        changeWorld.addColumns(screen, columns, 4);
+        changeWorld.addColumns(screen, columnManager, 4);
         timer.restart();
     }
 
     public void restart() {
         game = new Game();
-        columns = new Columns();
+        bird.setXY(INITIAL_BIRD_X, INITIAL_BIRD_Y);
+        columnManager = new ColumnManager(
+                INITIAL_COLUMN_WIDTH,
+                INITIAL_COLUMN_GAP,
+                INITIAL_SPACE_BTW_COLUMNS,
+                GRASS_HEIGHT);
+
         renderer.setGame(game);
-        renderer.setColumns(columns);
+        renderer.setColumns(columnManager);
         start();
     }
 
@@ -71,8 +91,8 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
     @Override
     public void actionPerformed(ActionEvent e) {
         if (game.getGameStatus() == Game.GameStatus.GAME_PLAYING) {
-            changeWorld.setSpeed(INITIAL_SPEED + game.getPassedColumns() / 3);
-            changeWorld.nextFrame(game, columns, bird, screen);
+            changeWorld.setSpeed(INITIAL_GAME_SPEED + game.getPassedColumns() / 3);
+            changeWorld.nextFrame(game, columnManager, bird, screen);
             checkGameOverAndRepaint();
         }
     }
@@ -83,7 +103,7 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
     @Override
     public void mouseClicked(MouseEvent e) {
         startGameIfNotYetPlaying();
-        changeWorld.jump(game, columns, bird, screen);
+        changeWorld.jump(game, columnManager, bird, screen);
         checkGameOverAndRepaint();
     }
 
@@ -105,7 +125,7 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
     @Override
     public void keyTyped(KeyEvent e) {
         startGameIfNotYetPlaying();
-        changeWorld.jump(game, columns, bird, screen);
+        changeWorld.jump(game, columnManager, bird, screen);
         checkGameOverAndRepaint();
     }
 
