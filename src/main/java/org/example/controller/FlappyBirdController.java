@@ -12,37 +12,30 @@ import java.awt.event.*;
 
 public class FlappyBirdController implements ActionListener, MouseListener, KeyListener {
 
-    public Renderer renderer;
     private Game game;
     private Columns columns;
     private final Bird bird;
     private final Screen screen;
-    private final ChangeWorld changeWorld = new ChangeWorld(3);
-    Timer timer;
+    private final ChangeWorld changeWorld;
+    private final Renderer renderer;
+    private final Timer timer;
     int WIDTH = 800;
     int HEIGHT = 600;
+    int INITIAL_SPEED = 3;
 
     public FlappyBirdController() {
         this.game = new Game();
-        this.screen = new Screen(WIDTH, HEIGHT);
-        this.bird = new Bird(screen.getWidth() / 2 - 10, screen.getHeight() / 2 - 10, 20, 20);
         this.columns = new Columns();
+        this.bird = new Bird(WIDTH / 2 - 10, HEIGHT / 2 - 10, 20, 20);
+        this.screen = new Screen(WIDTH, HEIGHT);
+        this.changeWorld = new ChangeWorld(INITIAL_SPEED);
         this.renderer = new Renderer(game, columns, bird, screen);
-        timer = new Timer(20, this);
-//        timer.start();
-    }
-
-    public Screen getScreen() {
-        return screen;
+        this.timer = new Timer(20, this);
     }
 
     public void start() {
         changeWorld.addColumns(screen, columns, 4);
         timer.restart();
-    }
-
-    public Renderer getRenderer(){
-        return renderer;
     }
 
     public void restart() {
@@ -53,14 +46,34 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
         start();
     }
 
-    // region: ActionListener
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        changeWorld.nextFrame(game, columns, bird, screen);
+    private void startGameIfNotYetPlaying(){
+        if (game.getGameStatus() == Game.GameStatus.INITIAL) {
+            game.setGameStatus(Game.GameStatus.GAME_PLAYING);
+        }
+    }
+
+    private void checkGameOverAndRepaint(){
         if (game.getGameStatus() == Game.GameStatus.GAME_OVER) {
             restart();
         }
         renderer.repaint();
+    }
+
+    public Screen getScreen() {
+        return screen;
+    }
+
+    public Renderer getRenderer(){
+        return renderer;
+    }
+
+    // region: ActionListener
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (game.getGameStatus() == Game.GameStatus.GAME_PLAYING) {
+            changeWorld.nextFrame(game, columns, bird, screen);
+            checkGameOverAndRepaint();
+        }
     }
     // end region
 
@@ -68,9 +81,7 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (game.getGameStatus() == Game.GameStatus.INITIAL) {
-            game.setGameStatus(Game.GameStatus.GAME_PLAYING);
-        }
+        startGameIfNotYetPlaying();
         changeWorld.jump(game, columns, bird, screen);
         checkGameOverAndRepaint();
     }
@@ -89,19 +100,10 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
 
     // end region
 
-    private void checkGameOverAndRepaint(){
-        if (game.getGameStatus() == Game.GameStatus.GAME_OVER) {
-            restart();
-        }
-        renderer.repaint();
-    }
-
     // region: KeyListener
     @Override
     public void keyTyped(KeyEvent e) {
-        if (game.getGameStatus() == Game.GameStatus.INITIAL) {
-            game.setGameStatus(Game.GameStatus.GAME_PLAYING);
-        }
+        startGameIfNotYetPlaying();
         changeWorld.jump(game, columns, bird, screen);
         checkGameOverAndRepaint();
     }

@@ -80,8 +80,6 @@ public class ChangeWorld {
             column.x -= speed;
             if (column.y == 0) {
                 if (columnCenterX < birdX && columnCenterX + speed > birdX) {
-                    System.out.println(birdX);
-                    System.out.println(i + "/" + columns.getSize() + " " + column.y + " " + column.x);
                     passedColumns++;
                 }
                 if (columnEdgeX < 0) {
