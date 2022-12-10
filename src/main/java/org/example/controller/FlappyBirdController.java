@@ -27,7 +27,7 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
     int BIRD_SIZE = 20;
     int INITIAL_GAME_SPEED = 3;
     int INITIAL_COLUMN_WIDTH = 100;
-    int INITIAL_COLUMN_GAP = 300;
+    int INITIAL_COLUMN_GAP = 250;
     int INITIAL_SPACE_BTW_COLUMNS = 400;
     int INITIAL_BIRD_X = SCREEN_WIDTH / 2 - 10;
     int INITIAL_BIRD_Y = SCREEN_HEIGHT / 2 - 10;
@@ -91,6 +91,7 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
     @Override
     public void actionPerformed(ActionEvent e) {
         if (game.getGameStatus() == Game.GameStatus.GAME_PLAYING) {
+            columnManager.setColumnGap(INITIAL_COLUMN_GAP - game.getPassedColumns() * 3);
             changeWorld.setSpeed(INITIAL_GAME_SPEED + game.getPassedColumns() / 3);
             changeWorld.nextFrame(game, columnManager, bird, screen);
             checkGameOverAndRepaint();
