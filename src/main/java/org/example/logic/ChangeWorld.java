@@ -79,7 +79,7 @@ public class ChangeWorld {
 
             column.x -= speed;
             if (column.y == 0) {
-                if (columnCenterX < birdX && columnCenterX + speed > birdX) {
+                if (columnCenterX - speed <= birdX && columnCenterX > birdX) {
                     passedColumns++;
                 }
                 if (columnEdgeX < 0) {
@@ -107,7 +107,7 @@ public class ChangeWorld {
             Bird bird,
             Screen screen
     ) {
-        bird.getBird().y -= Math.min(25, bird.getBird().y);
+        bird.getBird().y -= Math.min(speed * 5, bird.getBird().y);
         crashCheck(game, columns, bird, screen);
     }
 
