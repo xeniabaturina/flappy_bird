@@ -25,7 +25,5 @@ public class Main {
         jframe.setVisible(true);
 
         controller.start();
-
-        System.out.println("Hello world!");
     }
 }
