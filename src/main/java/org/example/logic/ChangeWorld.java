@@ -6,10 +6,12 @@ import org.example.model.Game;
 import org.example.model.Screen;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class ChangeWorld {
     private int speed;
+    private final Random random = new Random();
 
     public ChangeWorld(int speed) {
         this.speed = speed;
@@ -21,7 +23,7 @@ public class ChangeWorld {
             Bird bird,
             Screen screen
     ) {
-        if (bird.getBird().y == 0 || bird.getBird().y == screen.getHeight()) {
+        if (bird.getBird().y == 0 || bird.getBird().y == screen.getHeight() - 140) {
             game.setGameStatus(Game.GameStatus.GAME_OVER);
         } else {
             for (Rectangle column : columns.getColumns()) {
@@ -36,6 +38,30 @@ public class ChangeWorld {
         }
     }
 
+    private void addColumn(Screen screen, Columns columns, int widthColumn, int space){
+        int heightColumn = 50 + random.nextInt(250);
+
+        int columnX;
+        if (columns.getSize() == 0) {
+            columnX = screen.getWidth() + widthColumn;
+        } else {
+            int firstColumnX = columns.getColumns().get(columns.getColumns().size() - 1).x;
+            columnX = firstColumnX + 600;
+        }
+        columns.add(columnX, screen.getHeight() - heightColumn - 120, widthColumn, heightColumn);
+        columns.add(columnX, 0, widthColumn, screen.getHeight() - heightColumn - space);
+
+    }
+
+    public void addColumns(Screen screen, Columns columns, int amount) {
+        int widthColumn = 100;
+        int space = 300;
+
+        for (int i = 0; i < amount; i++){
+            addColumn(screen, columns, widthColumn, space);
+        }
+    }
+
     // move columns on screen & move bird
     public void nextFrame(
             Game game,
@@ -43,31 +69,36 @@ public class ChangeWorld {
             Bird bird,
             Screen screen
     ) {
-        for (Rectangle column : columns.getColumns()) {
+        int passedColumns = 0;
+        ArrayList<Integer> columnsToRemove = new ArrayList<>();
+        for (int i = 0; i < columns.getSize(); i++) {
+            Rectangle column = columns.getColumns().get(i);
             int birdX = bird.getBird().x;
             int columnEdgeX = (column.x + column.width);
-            int columnCenterX = (columnEdgeX / 2);
+            int columnCenterX = columnEdgeX - (column.width / 2);
 
             column.x -= speed;
             if (column.y == 0) {
-                if (columnCenterX < birdX && columnCenterX + speed >= birdX) {
-                    game.passColumn();
+                if (columnCenterX < birdX && columnCenterX + speed > birdX) {
+                    System.out.println(birdX);
+                    System.out.println(i + "/" + columns.getSize() + " " + column.y + " " + column.x);
+                    passedColumns++;
                 }
                 if (columnEdgeX < 0) {
-                    Random random = new Random();
-                    int space = 300;
-                    int width = 100;
-                    int height = 50 + random.nextInt(300);
-
-                    int firstColumnX = columns.getColumns().get(columns.getColumns().size() - 1).x;
-                    columns.add(firstColumnX + 600, screen.getHeight() - height - 120, width, height);
-                    columns.add(firstColumnX, 0, width, screen.getHeight() - height - space);
-                    columns.remove();
-                    columns.remove();
+                    columnsToRemove.add(i);
                 }
             }
         }
-        bird.getBird().y += Math.min(speed / 2, screen.getHeight() - bird.getBird().y);
+
+        for (int i = 0; i < passedColumns; i++) {
+            game.passColumn();
+        }
+        for (int i = 0; i < columnsToRemove.size(); i++) {
+            columns.remove();
+            columns.remove();
+        }
+        addColumns(screen, columns, columnsToRemove.size());
+        bird.getBird().y += Math.min(speed / 2, (screen.getHeight() - 140) - bird.getBird().y);
         crashCheck(game, columns, bird, screen);
     }
 
@@ -78,7 +109,7 @@ public class ChangeWorld {
             Bird bird,
             Screen screen
     ) {
-        bird.getBird().y -= Math.min(10, bird.getBird().y);
+        bird.getBird().y -= Math.min(25, bird.getBird().y);
         crashCheck(game, columns, bird, screen);
     }
 
