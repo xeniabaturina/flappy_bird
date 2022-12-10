@@ -1,6 +1,5 @@
 package org.example;
 
-
 import org.example.controller.FlappyBirdController;
 import org.example.logic.Renderer;
 import org.example.model.Screen;

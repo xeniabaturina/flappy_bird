@@ -1,9 +1,6 @@
 package org.example.logic;
 
-import org.example.model.Bird;
-import org.example.model.Columns;
-import org.example.model.Game;
-import org.example.model.Screen;
+import org.example.model.*;
 
 import java.awt.*;
 
@@ -32,17 +29,18 @@ public class Painter {
         }
     }
 
-    public void paint(Graphics graphics, Game game, Columns columns, Bird bird, Screen screen) {
+    public void paint(Graphics graphics, Game game, ColumnManager columnManager, Bird bird, Screen screen) {
         drawRectangle(graphics, skyColor, new Rectangle(0, 0, screen.getWidth(), screen.getHeight()));
 
-        drawRectangle(graphics, groundColor, new Rectangle(0, screen.getHeight() - 120, screen.getWidth(), 120));
+        drawRectangle(graphics, groundColor, new Rectangle(0, screen.getHeight() - columnManager.getGrassHeight(), screen.getWidth(), columnManager.getGrassHeight()));
 
-        drawRectangle(graphics, grassColor, new Rectangle(0, screen.getHeight() - 120, screen.getWidth(), 20));
+        drawRectangle(graphics, grassColor, new Rectangle(0, screen.getHeight() - columnManager.getGrassHeight(), screen.getWidth(), columnManager.getGrassHeight() / 6));
 
         drawRectangle(graphics, birdColor, bird.getBird());
 
-        for (Rectangle column : columns.getColumns()){
-            drawRectangle(graphics, columnColor, column);
+        for (Column column : columnManager.getColumns()){
+            drawRectangle(graphics, columnColor, column.getUpperColumn());
+            drawRectangle(graphics, columnColor, column.getBottomColumn());
         }
 
         drawTitle(graphics, game,  screen);

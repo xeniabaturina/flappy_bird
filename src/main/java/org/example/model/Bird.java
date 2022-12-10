@@ -13,4 +13,9 @@ public class Bird {
     public Rectangle getBird() {
         return bird;
     }
+
+    public void setXY(int x, int y) {
+        bird.x = x;
+        bird.y = y;
+    }
 }
