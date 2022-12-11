@@ -2,48 +2,43 @@ package org.example.controller;
 
 import org.example.logic.Renderer;
 import org.example.logic.ChangeWorld;
-import org.example.model.Bird;
+import org.example.model.*;
 import org.example.logic.ColumnManager;
-import org.example.model.Game;
-import org.example.model.Screen;
 
+import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.event.*;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static org.example.common.Config.BIRD_SIZE;
+
 public class FlappyBirdController implements ActionListener, MouseListener, KeyListener {
 
-    private Game game;
-    private ColumnManager columnManager;
-
+    private final Game game;
     private final Bird bird;
+    private final ColumnManager columnManager;
     private final Screen screen;
     private final ChangeWorld changeWorld;
     private final Renderer renderer;
     private final Timer timer;
+    private boolean isDifficultyIncreased = false;
 
-    int SCREEN_WIDTH = 800;
-    int SCREEN_HEIGHT = 600;
-    int GRASS_HEIGHT = 140;
-    int BIRD_SIZE = 20;
-    int INITIAL_GAME_SPEED = 3;
-    int INITIAL_COLUMN_WIDTH = 100;
-    int INITIAL_COLUMN_GAP = 250;
-    int INITIAL_SPACE_BTW_COLUMNS = 400;
-    int INITIAL_BIRD_X = SCREEN_WIDTH / 2 - 10;
-    int INITIAL_BIRD_Y = SCREEN_HEIGHT / 2 - 10;
 
-    public FlappyBirdController() {
-        this.game = new Game();
-        this.columnManager = new ColumnManager(
-                INITIAL_COLUMN_WIDTH,
-                INITIAL_COLUMN_GAP,
-                INITIAL_SPACE_BTW_COLUMNS,
-                GRASS_HEIGHT);
-
-        this.bird = new Bird(INITIAL_BIRD_X, INITIAL_BIRD_Y, BIRD_SIZE, BIRD_SIZE);
-        this.screen = new Screen(SCREEN_WIDTH, SCREEN_HEIGHT);
-        this.changeWorld = new ChangeWorld(INITIAL_GAME_SPEED);
-        this.renderer = new Renderer(game, columnManager, bird, screen);
+    public @Inject FlappyBirdController(
+            Bird bird,
+            Game game,
+            Screen screen,
+            Renderer renderer,
+            ChangeWorld changeWorld,
+            ColumnManager columnManager
+    ) {
+        this.game = game;
+        this.bird = bird;
+        this.screen = screen;
+        this.renderer = renderer;
+        this.changeWorld = changeWorld;
+        this.columnManager = columnManager;
         this.timer = new Timer(20, this);
     }
 
@@ -53,27 +48,21 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
     }
 
     public void restart() {
-        game = new Game();
-        bird.setXY(INITIAL_BIRD_X, INITIAL_BIRD_Y);
-        columnManager = new ColumnManager(
-                INITIAL_COLUMN_WIDTH,
-                INITIAL_COLUMN_GAP,
-                INITIAL_SPACE_BTW_COLUMNS,
-                GRASS_HEIGHT);
-
-        renderer.setGame(game);
-        renderer.setColumns(columnManager);
+        game.reset();
+        bird.reset();
+        changeWorld.reset();
+        columnManager.reset();
         start();
     }
 
     private void startGameIfNotYetPlaying() {
-        if (game.getGameStatus() == Game.GameStatus.INITIAL) {
-            game.setGameStatus(Game.GameStatus.GAME_PLAYING);
+        if (game.getGameStatus() == GameStatus.INITIAL) {
+            game.setGameStatus(GameStatus.GAME_PLAYING);
         }
     }
 
     private void checkGameOverAndRepaint() {
-        if (game.getGameStatus() == Game.GameStatus.GAME_OVER) {
+        if (game.getGameStatus() == GameStatus.GAME_OVER) {
             restart();
         }
         renderer.repaint();
@@ -96,9 +85,17 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
     // region: ActionListener
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (game.getGameStatus() == Game.GameStatus.GAME_PLAYING) {
-            columnManager.setColumnGap(INITIAL_COLUMN_GAP - game.getPassedColumns() * 3);
-            changeWorld.setSpeed(INITIAL_GAME_SPEED + game.getPassedColumns() / 3);
+        if (game.getGameStatus() == GameStatus.GAME_PLAYING) {
+
+            if (game.getPassedColumns() % 10 == 0) {
+                if (!isDifficultyIncreased) {
+                    isDifficultyIncreased = true;
+                    columnManager.setColumnGap(max(BIRD_SIZE * 5, columnManager.getColumnGap() - 1));
+                    changeWorld.setSpeed(changeWorld.getSpeed() + 1);
+                }
+            } else {
+                isDifficultyIncreased = false;
+            }
             changeWorld.nextFrame(game, columnManager, bird, screen);
             checkGameOverAndRepaint();
         }

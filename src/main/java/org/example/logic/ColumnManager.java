@@ -3,30 +3,35 @@ package org.example.logic;
 import org.example.model.Column;
 import org.example.model.Screen;
 
+import javax.inject.Inject;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static org.example.common.Config.*;
+
+
 public class ColumnManager {
 
-    private int columnWidth;
-    private int columnGap;
-    private int spaceBetweenColumns;
+    private int columnWidth = INITIAL_COLUMN_WIDTH;
+    private int columnGap = INITIAL_COLUMN_GAP;
+    private int spaceBetweenColumns = INITIAL_SPACE_BTW_COLUMNS;
 
-    private final int grassHeight;
+    private final int grassHeight = GRASS_HEIGHT;
     private final ArrayList<Column> columns;
     private final Random random;
 
-    public ColumnManager(int columnWidth, int columnGap, int spaceBetweenColumns, int grassHeight) {
-        this.columnWidth = columnWidth;
-        this.columnGap = columnGap;
-        this.spaceBetweenColumns = spaceBetweenColumns;
-        this.grassHeight = grassHeight;
+    public @Inject ColumnManager() {
         this.columns = new ArrayList<>();
         this.random = new Random();
     }
 
-    public void addColumn(Screen screen){
+    public void reset() {
+        columns.clear();
+        columnGap = INITIAL_COLUMN_GAP;
+    }
+
+    public void addColumn(Screen screen) {
         int height = screen.getHeight() - grassHeight;
         int heightWithoutGap = (height - columnGap);
         int indent = heightWithoutGap / 10;
@@ -50,7 +55,7 @@ public class ColumnManager {
         columns.add(new Column(upperColumn, bottomColumn, columnGap));
     }
 
-    public void remove(){
+    public void remove() {
         columns.remove(0);
     }
 
@@ -70,11 +75,13 @@ public class ColumnManager {
         return grassHeight;
     }
 
-    public int getSize(){
+    public int getSize() {
         return columns.size();
     }
 
-    public ArrayList<Column> getColumns(){ return columns;}
+    public ArrayList<Column> getColumns() {
+        return columns;
+    }
 
     public void setColumnWidth(int columnWidth) {
         this.columnWidth = columnWidth;
