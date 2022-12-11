@@ -1,5 +1,8 @@
 package org.example.model;
 
+import static org.example.common.Config.SCREEN_HEIGHT;
+import static org.example.common.Config.SCREEN_WIDTH;
+
 public class Screen {
 
     private final int width;
@@ -9,6 +12,11 @@ public class Screen {
     public Screen(int width, int height) {
         this.width = width;
         this.height = height;
+    }
+
+    public Screen() {
+        width = SCREEN_WIDTH;
+        height = SCREEN_HEIGHT;
     }
 
     public int getWidth() {
