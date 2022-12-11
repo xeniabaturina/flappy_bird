@@ -12,5 +12,6 @@ public class Config {
     public static final int INITIAL_SPACE_BTW_COLUMNS = 400;
     public static final int INITIAL_BIRD_X = SCREEN_WIDTH / 5 - 10;
     public static final int INITIAL_BIRD_Y = SCREEN_HEIGHT / 2 - 10;
+    public static final int COLUMN_MOVING_SPEED = 3;
 
 }

@@ -29,12 +29,9 @@ public class MovableColumnManager implements ColumnManager {
     }
 
     public void onNextFrame() {
-        System.out.println("SIZE " + columns.size() + " " + movingDirection.size());
         for (int i = 0; i < columns.size(); i++) {
             int currentMovingDirection = movingDirection.get(i);
             Column currentColumn = columns.get(i);
-            System.out.println(currentColumn.getBottomColumn().x);
-            System.out.println(grassHeight);
             if (currentColumn.getUpperColumn().height + currentMovingDirection > 0 &&
                     currentColumn.getBottomColumn().height - currentMovingDirection > 0) {
 
@@ -72,7 +69,7 @@ public class MovableColumnManager implements ColumnManager {
         Rectangle bottomColumn = new Rectangle(columnX, bottomColumnY, columnWidth, height - bottomColumnY);
 
         columns.add(new Column(upperColumn, bottomColumn, columnGap));
-        movingDirection.add(random.nextInt(-5, 5));
+        movingDirection.add(random.nextInt(COLUMN_MOVING_SPEED * -1, COLUMN_MOVING_SPEED));
     }
 
     public void remove() {
