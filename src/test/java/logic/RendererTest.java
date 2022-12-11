@@ -1,8 +1,8 @@
 package logic;
 
-import org.example.logic.ColumnManager;
 import org.example.logic.Painter;
 import org.example.logic.Renderer;
+import org.example.logic.column_manager.ColumnManager;
 import org.example.model.Bird;
 import org.example.model.Game;
 import org.example.model.Screen;
