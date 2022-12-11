@@ -1,12 +1,18 @@
 package org.example.model;
 
-import static org.example.model.Game.GameStatus.*;
+import javax.inject.Inject;
+
+import static org.example.model.GameStatus.*;
 
 public class Game {
 
     private int passedColumns = 0;
     private GameStatus gameStatus = INITIAL;
-    private int columnDistance = 120;
+
+    public void reset() {
+        gameStatus = INITIAL;
+        passedColumns = 0;
+    }
 
     public GameStatus getGameStatus() {
         return gameStatus;
@@ -14,16 +20,6 @@ public class Game {
 
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
-    }
-
-    public int getColumnDistance() {
-        return columnDistance;
-    }
-
-    public void setColumnDistance(int newDistance) {
-        if (gameNotPlaying()) {
-            columnDistance = newDistance;
-        }
     }
 
     public boolean startNewGame() {
@@ -56,8 +52,4 @@ public class Game {
         passedColumns++;
     }
 
-    public enum GameStatus {
-        INITIAL, GAME_PLAYING, GAME_OVER,
-
-    }
 }
