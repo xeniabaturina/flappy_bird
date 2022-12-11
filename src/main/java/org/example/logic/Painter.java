@@ -33,9 +33,64 @@ public class Painter {
         this.screen = screen;
     }
 
-    private void drawRectangle(Graphics graphics, Color color, Rectangle rectangle) {
-        graphics.setColor(color);
-        graphics.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    private BufferedImage crop(BufferedImage img, int x, int y, int newW, int newH) {
+        BufferedImage tmp = img.getSubimage(x, y, newW, newH);
+        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        return dimg;
+    }
+
+    private BufferedImage resize(BufferedImage img, int newW, int newH) {
+        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        return dimg;
+    }
+
+    private void drawRectangle(Graphics graphics, Color color, Rectangle rectangle, String fileName) {
+        if (!fileName.isEmpty()) {
+            try {
+                BufferedImage image;
+                File path = new File("src/main/resources");
+                image = ImageIO.read(new File(path, fileName));
+                int imageWidth = rectangle.width;
+                int imageHeight = rectangle.height;
+                int imageX = rectangle.x;
+                int imageY = rectangle.y;
+
+                switch (fileName) {
+                    case "bird.png":
+                        image = resize(image, imageWidth / 2 * 3, imageHeight / 2 * 3);
+                        imageX -= imageWidth / 4;
+                        imageY -= imageHeight / 4;
+                        break;
+                    case "pillarUp.png":
+                        image = crop(image, 0, image.getHeight() - imageHeight, imageWidth, imageHeight);
+                        break;
+                    case "pillarBot.png":
+                        image = crop(image, 0, 0, imageWidth, imageHeight);
+                        break;
+                    default:
+                        break;
+                }
+
+                graphics.drawImage(image, imageX, imageY, null);
+                image.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            graphics.setColor(color);
+            graphics.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        }
     }
 
     private void drawTitle(Graphics graphics) {
@@ -50,43 +105,18 @@ public class Painter {
         }
     }
 
-    private BufferedImage resize(BufferedImage img, int newW, int newH) {
-        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g2d = dimg.createGraphics();
-        g2d.drawImage(tmp, 0, 0, null);
-        g2d.dispose();
-
-        return dimg;
-    }
-
     public void paint(Graphics graphics) {
-        drawRectangle(graphics, skyColor, new Rectangle(0, 0, screen.getWidth(), screen.getHeight()));
+        drawRectangle(graphics, skyColor, new Rectangle(0, 0, screen.getWidth(), screen.getHeight()), "");
 
-        drawRectangle(graphics, groundColor, new Rectangle(0, screen.getHeight() - columnManager.getGrassHeight(), screen.getWidth(), columnManager.getGrassHeight()));
+        drawRectangle(graphics, groundColor, new Rectangle(0, screen.getHeight() - columnManager.getGrassHeight(), screen.getWidth(), columnManager.getGrassHeight()), "");
 
-        drawRectangle(graphics, grassColor, new Rectangle(0, screen.getHeight() - columnManager.getGrassHeight(), screen.getWidth(), columnManager.getGrassHeight() / 6));
+        drawRectangle(graphics, grassColor, new Rectangle(0, screen.getHeight() - columnManager.getGrassHeight(), screen.getWidth(), columnManager.getGrassHeight() / 6), "");
 
-        drawRectangle(graphics, skyColor, bird.getBird());
-
-        try {
-            BufferedImage image;
-            File path = new File("src/main/resources");
-            image = ImageIO.read(new File(path, "bird.png"));
-            int imageWidth = bird.getBird().width / 2 * 3;
-            int imageHeight = bird.getBird().height / 2 * 3;
-            int imageX = bird.getBird().x - (imageWidth - bird.getBird().width) / 2;
-            int imageY = bird.getBird().y - (imageHeight - bird.getBird().height) / 2;
-            image = resize(image, imageWidth, imageHeight);
-            graphics.drawImage(image, imageX, imageY, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        drawRectangle(graphics, birdColor, bird.getBird(), "bird.png");
 
         for (Column column : columnManager.getColumns()) {
-            drawRectangle(graphics, columnColor, column.getUpperColumn());
-            drawRectangle(graphics, columnColor, column.getBottomColumn());
+            drawRectangle(graphics, columnColor, column.getUpperColumn(), "pillarUp.png");
+            drawRectangle(graphics, columnColor, column.getBottomColumn(), "pillarBot.png");
         }
 
         drawTitle(graphics);
