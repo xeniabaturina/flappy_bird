@@ -3,6 +3,7 @@ package org.example.di;
 import dagger.Module;
 import dagger.Provides;
 import org.example.logic.ChangeWorld;
+import org.example.logic.Painter;
 import org.example.logic.column_manager.ColumnManager;
 import org.example.logic.column_manager.MovableColumnManager;
 import org.example.model.Bird;
@@ -35,6 +36,12 @@ public interface FlappyBirdModule {
     @Singleton
     static ChangeWorld provideChangeWorld() {
         return new ChangeWorld();
+    }
+
+    @Singleton
+    @Provides
+    static Painter providePainter() {
+        return new Painter();
     }
 
     @Singleton
