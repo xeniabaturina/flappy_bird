@@ -4,12 +4,10 @@ import org.example.model.Bird;
 import org.example.model.Game;
 import org.example.model.Screen;
 
-import java.awt.Graphics;
-import java.io.Serial;
-
 import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
+import java.io.Serial;
 
 public class Renderer extends JPanel {
 
@@ -17,13 +15,14 @@ public class Renderer extends JPanel {
     private ColumnManager columnManager;
     private final Bird bird;
     private final Screen screen;
+    private final Painter painter;
 
-
-    public @Inject Renderer(Game game, ColumnManager columnManager, Bird bird, Screen screen) {
+    public @Inject Renderer(Game game, ColumnManager columnManager, Bird bird, Screen screen, Painter painter) {
         this.game = game;
         this.columnManager = columnManager;
         this.bird = bird;
         this.screen = screen;
+        this.painter = painter;
     }
 
     public void setGame(Game game) {
@@ -38,9 +37,7 @@ public class Renderer extends JPanel {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
-        Painter painter = new Painter();
+    public void paintComponent(Graphics graphics) {
         painter.paint(graphics, game, columnManager, bird, screen);
     }
 }

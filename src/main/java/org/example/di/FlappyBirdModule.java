@@ -4,6 +4,7 @@ import dagger.Module;
 import dagger.Provides;
 import org.example.logic.ChangeWorld;
 import org.example.logic.ColumnManager;
+import org.example.logic.Painter;
 import org.example.model.Bird;
 import org.example.model.Game;
 import org.example.model.Screen;
@@ -40,5 +41,11 @@ public interface FlappyBirdModule {
     @Provides
     static ColumnManager provideColumnManager() {
         return new ColumnManager();
+    }
+
+    @Singleton
+    @Provides
+    static Painter providePainter(){
+        return new Painter();
     }
 }
