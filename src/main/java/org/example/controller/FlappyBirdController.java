@@ -66,24 +66,30 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
         start();
     }
 
-    private void startGameIfNotYetPlaying(){
+    private void startGameIfNotYetPlaying() {
         if (game.getGameStatus() == Game.GameStatus.INITIAL) {
             game.setGameStatus(Game.GameStatus.GAME_PLAYING);
         }
     }
 
-    private void checkGameOverAndRepaint(){
+    private void checkGameOverAndRepaint() {
         if (game.getGameStatus() == Game.GameStatus.GAME_OVER) {
             restart();
         }
         renderer.repaint();
     }
 
+    private void jump() {
+        startGameIfNotYetPlaying();
+        changeWorld.jump(game, columnManager, bird, screen);
+        checkGameOverAndRepaint();
+    }
+
     public Screen getScreen() {
         return screen;
     }
 
-    public Renderer getRenderer(){
+    public Renderer getRenderer() {
         return renderer;
     }
 
@@ -103,9 +109,7 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        startGameIfNotYetPlaying();
-        changeWorld.jump(game, columnManager, bird, screen);
-        checkGameOverAndRepaint();
+        jump();
     }
 
     @Override
@@ -125,9 +129,7 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
     // region: KeyListener
     @Override
     public void keyTyped(KeyEvent e) {
-        startGameIfNotYetPlaying();
-        changeWorld.jump(game, columnManager, bird, screen);
-        checkGameOverAndRepaint();
+        jump();
     }
 
     @Override
