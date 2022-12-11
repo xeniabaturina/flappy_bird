@@ -1,3 +1,11 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+    }
+}
+
 plugins {
     id 'java'
 }
@@ -5,16 +13,35 @@ plugins {
 group 'org.example'
 version '1.0-SNAPSHOT'
 
+allprojects {
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+    }
+}
+
 repositories {
     mavenCentral()
 }
 
+
+configurations.configureEach {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'com.google.dagger') {
+            details.useVersion "HEAD-SNAPSHOT"
+        }
+    }
+}
 dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
     testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.0'
     testCompileOnly 'org.junit.jupiter:junit-jupiter-api:5.9.0'
-    testImplementation 'org.mockito:mockito-core:3.12.4'
+    testImplementation 'org.mockito:mockito-core:4.8.0'
+
+    implementation 'com.google.dagger:dagger:HEAD-SNAPSHOT'
+    annotationProcessor 'com.google.dagger:dagger-compiler:HEAD-SNAPSHOT'
 }
 
 test {
