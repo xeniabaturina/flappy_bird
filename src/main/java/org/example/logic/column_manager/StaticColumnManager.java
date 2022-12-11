@@ -1,4 +1,5 @@
-package org.example.logic;
+
+package org.example.logic.column_manager;
 
 import org.example.model.Column;
 import org.example.model.Screen;
@@ -11,7 +12,7 @@ import java.util.Random;
 import static org.example.common.Config.*;
 
 
-public class ColumnManager {
+public class StaticColumnManager implements ColumnManager{
 
     private int columnWidth = INITIAL_COLUMN_WIDTH;
     private int columnGap = INITIAL_COLUMN_GAP;
@@ -21,7 +22,7 @@ public class ColumnManager {
     private final ArrayList<Column> columns;
     private final Random random;
 
-    public @Inject ColumnManager() {
+    public @Inject StaticColumnManager() {
         this.columns = new ArrayList<>();
         this.random = new Random();
     }
@@ -58,6 +59,8 @@ public class ColumnManager {
     public void remove() {
         columns.remove(0);
     }
+
+    public void onNextFrame() {/*ignore*/}
 
     public int getColumnWidth() {
         return columnWidth;

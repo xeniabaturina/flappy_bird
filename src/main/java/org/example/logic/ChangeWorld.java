@@ -1,5 +1,6 @@
 package org.example.logic;
 
+import org.example.logic.column_manager.ColumnManager;
 import org.example.model.*;
 
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ public class ChangeWorld {
         for (int i = 0; i < columnsToRemove.size(); i++) {
             columnManager.remove();
         }
+        columnManager.onNextFrame();
         addColumns(screen, columnManager, columnsToRemove.size());
         bird.getBird().y += Math.min(speed / 2, (screen.getHeight() - columnManager.getGrassHeight()) - bird.getBird().y - bird.getBird().height);
         crashCheck(game, columnManager, bird, screen);

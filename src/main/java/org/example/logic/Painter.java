@@ -1,6 +1,10 @@
 package org.example.logic;
 
-import org.example.model.*;
+import org.example.logic.column_manager.ColumnManager;
+import org.example.model.Bird;
+import org.example.model.Column;
+import org.example.model.Game;
+import org.example.model.Screen;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

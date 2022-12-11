@@ -1,16 +1,18 @@
 package org.example.controller;
 
-import org.example.logic.Renderer;
 import org.example.logic.ChangeWorld;
-import org.example.model.*;
-import org.example.logic.ColumnManager;
+import org.example.logic.Renderer;
+import org.example.logic.column_manager.ColumnManager;
+import org.example.model.Bird;
+import org.example.model.Game;
+import org.example.model.GameStatus;
+import org.example.model.Screen;
 
 import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.event.*;
 
 import static java.lang.Math.max;
-import static java.lang.Math.min;
 import static org.example.common.Config.BIRD_SIZE;
 
 public class FlappyBirdController implements ActionListener, MouseListener, KeyListener {
@@ -90,7 +92,7 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
             if (game.getPassedColumns() % 10 == 0) {
                 if (!isDifficultyIncreased) {
                     isDifficultyIncreased = true;
-                    columnManager.setColumnGap(max(BIRD_SIZE * 5, columnManager.getColumnGap() - 1));
+                    columnManager.setColumnGap(max(BIRD_SIZE * 5, columnManager.getColumnGap() - game.getPassedColumns()/3));
                     changeWorld.setSpeed(changeWorld.getSpeed() + 1);
                 }
             } else {

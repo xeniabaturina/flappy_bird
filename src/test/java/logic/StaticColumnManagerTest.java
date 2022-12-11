@@ -1,6 +1,7 @@
 package logic;
 
-import org.example.logic.ColumnManager;
+import org.example.logic.column_manager.ColumnManager;
+import org.example.logic.column_manager.StaticColumnManager;
 import org.example.model.Column;
 import org.example.model.Screen;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ColumnManagerTest {
+public class StaticColumnManagerTest {
 
     public ColumnManager columnManager;
 
@@ -22,7 +23,7 @@ public class ColumnManagerTest {
 
     @BeforeEach
     public void init() {
-        columnManager = new ColumnManager();
+        columnManager = new StaticColumnManager();
     }
 
     @Test
