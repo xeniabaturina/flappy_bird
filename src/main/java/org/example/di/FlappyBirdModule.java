@@ -34,19 +34,35 @@ public interface FlappyBirdModule {
 
     @Provides
     @Singleton
-    static ChangeWorld provideChangeWorld() {
-        return new ChangeWorld();
+    static ChangeWorld provideChangeWorld(
+            Game game,
+            ColumnManager columnManager,
+            Bird bird,
+            Screen screen
+    ) {
+        return ChangeWorld
+                .Builder
+                .newInstance(game, columnManager, bird, screen)
+                .setSpeed(3)
+                .build();
     }
 
     @Singleton
     @Provides
-    static Painter providePainter() {
-        return new Painter();
+    static Painter providePainter(
+            Game game,
+            ColumnManager columnManager,
+            Bird bird,
+            Screen screen
+    ) {
+        return new Painter(game, columnManager, bird, screen);
     }
 
     @Singleton
     @Provides
-    static ColumnManager provideColumnManager() {
-        return new MovableColumnManager();
+    static ColumnManager provideColumnManager(
+            Screen screen
+    ) {
+        return new MovableColumnManager(screen);
     }
 }

@@ -12,11 +12,12 @@ import java.io.Serial;
 
 public class Renderer extends JPanel {
 
-    private Game game;
-    private ColumnManager columnManager;
+    private final Game game;
+    private final ColumnManager columnManager;
     private final Bird bird;
     private final Screen screen;
-    private final Painter painter;
+    private final org.example.logic.Painter painter;
+
 
     public @Inject Renderer(Game game, ColumnManager columnManager, Bird bird, Screen screen, Painter painter) {
         this.game = game;
@@ -26,19 +27,11 @@ public class Renderer extends JPanel {
         this.painter = painter;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
-    public void setColumns(ColumnManager columnManager) {
-        this.columnManager = columnManager;
-    }
-
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Override
     public void paintComponent(Graphics graphics) {
-        painter.paint(graphics, game, columnManager, bird, screen);
+        painter.paint(graphics);
     }
 }

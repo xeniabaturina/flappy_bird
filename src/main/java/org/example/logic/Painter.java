@@ -14,26 +14,39 @@ import java.io.IOException;
 
 public class Painter {
 
-    Color skyColor = Color.cyan;
-    Color groundColor = Color.orange;
-    Color grassColor = Color.green;
-    Color birdColor = Color.red;
-    Color columnColor = Color.green.darker();
-    Color titleColor = Color.white;
+    private final Color skyColor = Color.cyan;
+    private final Color groundColor = Color.orange;
+    private final Color grassColor = Color.green;
+    private final Color birdColor = Color.red;
+    private final Color columnColor = Color.green.darker();
+    private final Color titleColor = Color.white;
 
-    private void drawRectangle(Graphics graphics, Color color, Rectangle rectangle){
+    private final Game game;
+    private final ColumnManager columnManager;
+    private final Bird bird;
+    private final Screen screen;
+
+    public Painter(Game game, ColumnManager columnManager, Bird bird, Screen screen) {
+        this.game = game;
+        this.columnManager = columnManager;
+        this.bird = bird;
+        this.screen = screen;
+    }
+
+    private void drawRectangle(Graphics graphics, Color color, Rectangle rectangle) {
         graphics.setColor(color);
         graphics.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     }
 
-    private void drawTitle(Graphics graphics, Game game, Screen screen){
+    private void drawTitle(Graphics graphics) {
         graphics.setColor(titleColor);
         graphics.setFont(new Font("Arial", Font.BOLD, 100));
 
         switch (game.getGameStatus()) {
             case INITIAL -> graphics.drawString("Click to start!", 75, screen.getHeight() / 2 - 50);
             case GAME_OVER -> graphics.drawString("Game Over!", 100, screen.getHeight() / 2 - 50);
-            case GAME_PLAYING -> graphics.drawString(String.valueOf(game.getPassedColumns()), screen.getWidth() / 2 - 25, 100);
+            case GAME_PLAYING ->
+                    graphics.drawString(String.valueOf(game.getPassedColumns()), screen.getWidth() / 2 - 25, 100);
         }
     }
 
@@ -48,7 +61,7 @@ public class Painter {
         return dimg;
     }
 
-    public void paint(Graphics graphics, Game game, ColumnManager columnManager, Bird bird, Screen screen) {
+    public void paint(Graphics graphics) {
         drawRectangle(graphics, skyColor, new Rectangle(0, 0, screen.getWidth(), screen.getHeight()));
 
         drawRectangle(graphics, groundColor, new Rectangle(0, screen.getHeight() - columnManager.getGrassHeight(), screen.getWidth(), columnManager.getGrassHeight()));
@@ -71,11 +84,11 @@ public class Painter {
             e.printStackTrace();
         }
 
-        for (Column column : columnManager.getColumns()){
+        for (Column column : columnManager.getColumns()) {
             drawRectangle(graphics, columnColor, column.getUpperColumn());
             drawRectangle(graphics, columnColor, column.getBottomColumn());
         }
 
-        drawTitle(graphics, game,  screen);
+        drawTitle(graphics);
     }
 }

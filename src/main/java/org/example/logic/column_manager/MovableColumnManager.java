@@ -21,11 +21,13 @@ public class MovableColumnManager implements ColumnManager {
     private final ArrayList<Column> columns;
     private final ArrayList<Integer> movingDirection;
     private final Random random;
+    private final Screen screen;
 
-    public @Inject MovableColumnManager() {
+    public @Inject MovableColumnManager(Screen screen) {
         this.columns = new ArrayList<>();
         this.random = new Random();
         this.movingDirection = new ArrayList<>();
+        this.screen = screen;
     }
 
     public void onNextFrame() {
@@ -49,11 +51,7 @@ public class MovableColumnManager implements ColumnManager {
         columnGap = INITIAL_COLUMN_GAP;
     }
 
-    public int randInt(int min, int max) {
-        return random.nextInt((max - min) + 1) + min;
-    }
-
-    public void addColumn(Screen screen) {
+    public void addColumn() {
         int height = screen.getHeight() - grassHeight;
         int heightWithoutGap = (height - columnGap);
         int indent = heightWithoutGap / 10;
@@ -73,7 +71,7 @@ public class MovableColumnManager implements ColumnManager {
         Rectangle bottomColumn = new Rectangle(columnX, bottomColumnY, columnWidth, height - bottomColumnY);
 
         columns.add(new Column(upperColumn, bottomColumn, columnGap));
-        movingDirection.add(randInt(-5, 5));
+        movingDirection.add(random.nextInt(-5, 5));
     }
 
     public void remove() {

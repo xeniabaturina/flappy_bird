@@ -12,7 +12,7 @@ import java.util.Random;
 import static org.example.common.Config.*;
 
 
-public class StaticColumnManager implements ColumnManager{
+public class StaticColumnManager implements ColumnManager {
 
     private int columnWidth = INITIAL_COLUMN_WIDTH;
     private int columnGap = INITIAL_COLUMN_GAP;
@@ -21,10 +21,12 @@ public class StaticColumnManager implements ColumnManager{
     private final int grassHeight = GRASS_HEIGHT;
     private final ArrayList<Column> columns;
     private final Random random;
+    private final Screen screen;
 
-    public @Inject StaticColumnManager() {
+    public @Inject StaticColumnManager(Screen screen) {
         this.columns = new ArrayList<>();
         this.random = new Random();
+        this.screen = screen;
     }
 
     public void reset() {
@@ -32,7 +34,7 @@ public class StaticColumnManager implements ColumnManager{
         columnGap = INITIAL_COLUMN_GAP;
     }
 
-    public void addColumn(Screen screen) {
+    public void addColumn() {
         int height = screen.getHeight() - grassHeight;
         int heightWithoutGap = (height - columnGap);
         int indent = heightWithoutGap / 10;

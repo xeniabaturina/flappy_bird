@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class ChangeWorldTest {
 
@@ -20,17 +21,22 @@ public class ChangeWorldTest {
 
     @BeforeEach
     void init() {
-        changeWorld = new ChangeWorld(10);
         game = new Game();
-        columnManager = new StaticColumnManager();
+        columnManager = new StaticColumnManager(mock(Screen.class));
         bird = new Bird();
         screen = new Screen(500, 500);
+
+        changeWorld = ChangeWorld
+                .Builder
+                .newInstance(game, columnManager, bird, screen)
+                .setSpeed(10)
+                .build();
     }
 
     @Test
     void stressTest() {
         for (int i = 0; i < 50; i++) {
-            changeWorld.nextFrame(game, columnManager, bird, screen);
+            changeWorld.nextFrame();
         }
         assertTrue(game.gameNotPlaying());
     }

@@ -3,7 +3,6 @@ package org.example;
 import org.example.controller.FlappyBirdController;
 import org.example.di.DaggerFlappyBirdComponent;
 import org.example.di.FlappyBirdComponent;
-import org.example.di.FlappyBirdModule;
 import org.example.logic.Renderer;
 import org.example.model.Screen;
 
