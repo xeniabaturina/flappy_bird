@@ -72,7 +72,7 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
 
     private void jump() {
         startGameIfNotYetPlaying();
-        changeWorld.jump(game, columnManager, bird, screen);
+        changeWorld.jump();
         checkGameOverAndRepaint();
     }
 
@@ -92,13 +92,13 @@ public class FlappyBirdController implements ActionListener, MouseListener, KeyL
             if (game.getPassedColumns() % 10 == 0) {
                 if (!isDifficultyIncreased) {
                     isDifficultyIncreased = true;
-                    columnManager.setColumnGap(max(BIRD_SIZE * 5, columnManager.getColumnGap() - game.getPassedColumns()/3));
+                    columnManager.setColumnGap(max(BIRD_SIZE * 5, columnManager.getColumnGap() - game.getPassedColumns() / 3));
                     changeWorld.setSpeed(changeWorld.getSpeed() + 1);
                 }
             } else {
                 isDifficultyIncreased = false;
             }
-            changeWorld.nextFrame(game, columnManager, bird, screen);
+            changeWorld.nextFrame();
             checkGameOverAndRepaint();
         }
     }

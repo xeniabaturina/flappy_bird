@@ -9,16 +9,53 @@ import static org.example.common.Config.INITIAL_GAME_SPEED;
 
 public class ChangeWorld {
 
-    private int speed = INITIAL_GAME_SPEED;
+    private Game game;
+    private ColumnManager columnManager;
+    private Bird bird;
+    private Screen screen;
+    private int speed;
 
-    public ChangeWorld(int speed) {
-        this.speed = speed;
+    public ChangeWorld(Builder builder) {
+        this.speed = builder.speed;
+        this.game = builder.game;
+        this.columnManager = builder.columnManager;
+        this.bird = builder.bird;
+        this.screen = builder.screen;
     }
 
-    public ChangeWorld() {
+    public static class Builder {
+        private Game game;
+        private ColumnManager columnManager;
+        private Bird bird;
+        private Screen screen;
+        private int speed;
+
+        public static Builder newInstance(
+                Game game,
+                ColumnManager columnManager,
+                Bird bird,
+                Screen screen
+        ) {
+            Builder builder = new Builder();
+            builder.game = game;
+            builder.columnManager = columnManager;
+            builder.bird = bird;
+            builder.screen = screen;
+            return builder;
+        }
+
+        public Builder setSpeed(int speed) {
+            this.speed = speed;
+            return this;
+        }
+
+        public ChangeWorld build() {
+            return new ChangeWorld(this);
+        }
+
     }
 
-    private void crashCheck(Game game, ColumnManager columnManager, Bird bird, Screen screen) {
+    private void crashCheck() {
         if (bird.getBird().y == 0 || bird.getBird().y == screen.getHeight() - 140) {
             game.setGameStatus(GameStatus.GAME_OVER);
         } else {
@@ -44,12 +81,12 @@ public class ChangeWorld {
 
     public void addColumns(Screen screen, ColumnManager columnManager, int amount) {
         for (int i = 0; i < amount; i++) {
-            columnManager.addColumn(screen);
+            columnManager.addColumn();
         }
     }
 
     // move columns on screen & move bird
-    public void nextFrame(Game game, ColumnManager columnManager, Bird bird, Screen screen) {
+    public void nextFrame() {
         int passedColumns = 0;
         ArrayList<Integer> columnsToRemove = new ArrayList<>();
         for (int i = 0; i < columnManager.getSize(); i++) {
@@ -76,13 +113,13 @@ public class ChangeWorld {
         columnManager.onNextFrame();
         addColumns(screen, columnManager, columnsToRemove.size());
         bird.getBird().y += Math.min(speed / 2, (screen.getHeight() - columnManager.getGrassHeight()) - bird.getBird().y - bird.getBird().height);
-        crashCheck(game, columnManager, bird, screen);
+        crashCheck();
     }
 
     //when user clicks to fly up
-    public void jump(Game game, ColumnManager columnManager, Bird bird, Screen screen) {
+    public void jump() {
         bird.getBird().y -= Math.min(speed * 5, bird.getBird().y);
-        crashCheck(game, columnManager, bird, screen);
+        crashCheck();
     }
 
     public int getSpeed() {

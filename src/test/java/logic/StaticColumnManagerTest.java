@@ -23,18 +23,19 @@ public class StaticColumnManagerTest {
 
     @BeforeEach
     public void init() {
-        columnManager = new StaticColumnManager();
+        Screen screenMock = mock(Screen.class);
+        when(screenMock.getWidth()).thenReturn(DEFAULT_SCREEN_SIZE);
+        when(screenMock.getHeight()).thenReturn(DEFAULT_SCREEN_SIZE);
+
+        columnManager = new StaticColumnManager(mock(Screen.class));
     }
 
     @Test
     public void addColumnTest() {
         assertEquals(columnManager.getColumns().size(), 0);
 
-        Screen screenMock = mock(Screen.class);
-        when(screenMock.getWidth()).thenReturn(DEFAULT_SCREEN_SIZE);
-        when(screenMock.getHeight()).thenReturn(DEFAULT_SCREEN_SIZE);
 
-        columnManager.addColumn(screenMock);
+        columnManager.addColumn();
 
         ArrayList<Column> addedColumns = columnManager.getColumns();
 

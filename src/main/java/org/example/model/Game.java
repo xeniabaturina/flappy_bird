@@ -1,7 +1,5 @@
 package org.example.model;
 
-import javax.inject.Inject;
-
 import static org.example.model.GameStatus.*;
 
 public class Game {
