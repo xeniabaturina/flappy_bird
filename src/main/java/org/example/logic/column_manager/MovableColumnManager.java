@@ -52,6 +52,10 @@ public class MovableColumnManager implements ColumnManager {
         columnGap = INITIAL_COLUMN_GAP;
     }
 
+    public int randInt(int min, int max) {
+        return random.nextInt((max - min) + 1) + min;
+    }
+
     public void addColumn(Screen screen) {
         int height = screen.getHeight() - grassHeight;
         int heightWithoutGap = (height - columnGap);
@@ -72,7 +76,7 @@ public class MovableColumnManager implements ColumnManager {
         Rectangle bottomColumn = new Rectangle(columnX, bottomColumnY, columnWidth, height - bottomColumnY);
 
         columns.add(new Column(upperColumn, bottomColumn, columnGap));
-        movingDirection.add(random.nextInt(-5, 5));
+        movingDirection.add(randInt(-5, 5));
     }
 
     public void remove() {

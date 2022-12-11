@@ -8,29 +8,29 @@ import java.util.ArrayList;
 
 public interface ColumnManager {
 
-    public void reset();
+    void reset();
 
-    public void addColumn(Screen screen);
+    void addColumn(Screen screen);
 
-    public void remove();
+    void remove();
 
-    public void onNextFrame();
+    void onNextFrame();
 
-    public int getColumnWidth();
+    int getColumnWidth();
 
-    public int getColumnGap();
+    int getColumnGap();
 
-    public int getSpaceBetweenColumns();
+    int getSpaceBetweenColumns();
 
-    public int getGrassHeight();
+    int getGrassHeight();
 
-    public int getSize();
+    int getSize();
 
-    public ArrayList<Column> getColumns();
+    ArrayList<Column> getColumns();
 
-    public void setColumnWidth(int columnWidth);
+    void setColumnWidth(int columnWidth);
 
-    public void setColumnGap(int columnGap);
+    void setColumnGap(int columnGap);
 
-    public void setSpaceBetweenColumns(int spaceBetweenColumns);
+    void setSpaceBetweenColumns(int spaceBetweenColumns);
 }
